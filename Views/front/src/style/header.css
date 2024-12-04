@@ -1,0 +1,36 @@
+.header {
+    width: 100%;
+    background-color: var(--mainColor);
+}
+
+.header__container {
+    height: 100px;
+    margin: 0 auto;
+    padding: 0 20px 0 35px;
+    max-width: 1000px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header__content {
+    padding-left: 50px;
+}
+
+.header__logo{
+    font-size: 32px;
+    font-family: "Kablammo", system-ui;
+}
+
+.header__nav{
+    padding-right: 10px;
+}
+
+.header__nav .nav__list{
+    display: flex;
+    gap: 30px;
+}
+
+.nav__list__link {
+    color: var(--bcContent);
+}
