@@ -7,9 +7,10 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.11.3",
     "react-router-dom": "^6.27.0",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^3.0.1"
   },
   "devDependencies": {
+    "gh-pages": "^6.2.0",
     "nodemon": "^3.1.7"
   },
   "scripts": {

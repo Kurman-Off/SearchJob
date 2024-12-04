@@ -400,7 +400,7 @@ function CreateResume() {
                                         onChange={handleResumeChange}
                                     >
                                         <option className="option" value="" disabled>-вибрати-</option>
-                                        {["вища", "незакінчена вища", "середня", "незакінчена середня"].map((option, index) => (
+                                        {["вища", "незакінчена вища", "середня", "незакінчена середня"].map((option) => (
                                             <option
                                                 className="option"
                                                 key={option}
