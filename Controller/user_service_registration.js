@@ -1,7 +1,7 @@
 const connection = require("../Modal/mysql_connection");
 const crypto = require("crypto");
 
-function validateuserData(userData) {
+function validateUserData(userData) {
     const cleanedData = {
         name: userData.name.replace(/\s+/g, ""),
         surname: userData.surname.replace(/\s+/g, ""),
@@ -17,9 +17,6 @@ function validateuserData(userData) {
 
 
     if (isNaN(parseNumber) || splitNumber.length !== 13) {
-        console.log(splitNumber);
-        console.log(typeof(splitNumber));
-        console.log(cleanedData.number);
         return { isValid: false, message: "Номер телефону введений не коректно." };
     }
 
@@ -65,7 +62,7 @@ function registerUser (userDataRegistration, callback) {
 }
 
 function registerNewUser(userData, res) {
-    const validation = validateuserData(userData);
+    const validation = validateUserData(userData);
 
     if (!validation.isValid) {
         return res.status(400).send(validation.message);

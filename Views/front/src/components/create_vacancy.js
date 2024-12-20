@@ -3,11 +3,14 @@ import axios from "axios";
 import Header from "./header";
 import "../style/vacancy-resume-forms.css";
 import { useNavigate } from "react-router-dom";
+import withAuth from "./withAuth"
+
 
 function CreateVacancy() {
 
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const [companyName, setCompanyName] = useState("");
     const [vacancyTitle, setVacancyTitle] = useState("");
     const [category, setCategory] = useState("");
     const [workConditions, setWorkConditions] = useState({
@@ -28,6 +31,10 @@ function CreateVacancy() {
         audienceArray: [],
     });
     const [description, setDescription] = useState("");
+
+    const handleCompanyNameChange = (event) => {
+        setCompanyName(event.target.value);
+    }
 
     const handleVacancyTitleChange = (event) => {
         setVacancyTitle(event.target.value);
@@ -132,14 +139,17 @@ function CreateVacancy() {
                 return null;
             }
         } else if (salaryType === 'single') {
-            return salarySingle ? Number(salarySingle) : null;
+            return salarySingle;
         }
+
         return null;
     };
 
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        const salary = getSalary();
+        const token = localStorage.getItem("token");
 
         if (!vacancyTitle ||!category) {
             setError("Please fill in all fields.");
@@ -149,9 +159,17 @@ function CreateVacancy() {
             return;
         }
 
-        const salary = getSalary();
+
+        if (!token) {
+            setError("Токен не знайдений. Будь ласка, увійдіть.");
+            setTimeout(() => {
+                setError("");
+            }, 3000);
+            return;
+        }
 
         axios.post("http://localhost:3000/create-vacancy", {
+            companyName: companyName,
             title: vacancyTitle,
             category: category,
             type: workConditions.type,
@@ -164,10 +182,14 @@ function CreateVacancy() {
             languages: languages.languagesArray,
             targetAudiences: targetAudiences.audienceArray,
             description: description,
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         })
             .then((res) => {
-                if (res.status === 201) {
-                    navigate("/");
+                if (res.status === 200) {
+                    navigate("/my/vacancies");
                 }
             })
             .catch((err) => {
@@ -197,287 +219,290 @@ function CreateVacancy() {
                             </div>
                     }
                     <form className="form" onSubmit={handleSubmit}>
-                            <section className="search__vacancy section">
-                                <h2 className="search__vacancy__title">Назва посади</h2>
-                                <label className="label">
-                                    <input
-                                        className="l__input input"
-                                        type="text"
-                                        placeholder="Наприклад, фронтенд розробник"
-                                        value={vacancyTitle}
-                                        onChange={handleVacancyTitleChange}
-                                    />
-                                </label>
-                            </section>
-                            <section className="search__category section">
-                                <h3>Категорія розміщення вакансії</h3>
-                                <ul className="checkbox__list">
-                                    {['IT', 'Design', 'Marketing', 'Medicine', 'Hotel and restaurant business, tourism'].map((categoryItem) => (
-                                        <li className="checkbox__list__item" key={categoryItem}>
-                                            <label className="label">
-                                                <input
-                                                    className="check__icon"
-                                                    type="radio"
-                                                    name="category"
-                                                    value={categoryItem}
-                                                    checked={category === categoryItem}
-                                                    onChange={handleCategoryChange}
-                                                    required
-                                                />
-                                                {categoryItem}
-                                            </label>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </section>
-                            <hr/>
-                            <section className="working__conditions section">
-                                <h2>Умови роботи</h2>
-                                <div className="working__conditions__radio">
-                                    <div className="working__conditions__radio__group">
+                        <section className="search__vacancy section">
+                            <h2>Назва компанії</h2>
+                            <input
+                                className="m__input input"
+                                type="text"
+                                name="companyName"
+                                value={companyName.companyName}
+                                onChange={handleCompanyNameChange}
+                            />
+                        </section>
+
+                        <section className="search__vacancy section">
+                            <h2 className="search__vacancy__title">Назва посади</h2>
+                            <label className="label">
+                                <input
+                                    className="l__input input"
+                                    type="text"
+                                    placeholder="Наприклад, фронтенд розробник"
+                                    value={vacancyTitle}
+                                    onChange={handleVacancyTitleChange}
+                                />
+                            </label>
+                        </section>
+                        <section className="search__category section">
+                            <h3>Категорія розміщення вакансії</h3>
+                            <ul className="checkbox__list">
+                                {['IT', 'Design', 'Marketing', 'Medicine', 'Hotel and restaurant business, tourism'].map((categoryItem) => (
+                                    <li className="checkbox__list__item" key={categoryItem}>
                                         <label className="label">
                                             <input
                                                 className="check__icon"
                                                 type="radio"
-                                                name="type"
-                                                value="office"
-                                                checked={workConditions.type === "office"}
-                                                onChange={handleWorkConditionsChange}
+                                                name="category"
+                                                value={categoryItem}
+                                                checked={category === categoryItem}
+                                                onChange={handleCategoryChange}
+                                                required
                                             />
-                                            Місто та адреса
+                                            {categoryItem}
                                         </label>
-                                    </div>
-                                    {workConditions.type === "office" && (
-                                        <div className="working__conditions__radio__content">
-                                            <label className="working__conditions__radio__content__label cm__label label">
-                                                <input
-                                                    className="m__input input"
-                                                    type="text"
-                                                    name="city"
-                                                    value={workConditions.city}
-                                                    onChange={handleWorkConditionsChange}
-                                                    placeholder="Місто"
-                                                />
-                                                <input
-                                                    className="m__input input"
-                                                    type="text"
-                                                    name="address"
-                                                    value={workConditions.address}
-                                                    onChange={handleWorkConditionsChange}
-                                                    placeholder="Вулиця і будинок"
-                                                />
-                                            </label>
-                                        </div>
-                                    )}
-                                    <div className="working__conditions__radio__group">
-                                        <label className="label">
-                                            <input
-                                                className="check__icon"
-                                                type="radio"
-                                                name="type"
-                                                value="remote"
-                                                checked={workConditions.type === "remote"}
-                                                onChange={handleWorkConditionsChange}
-                                            />
-                                            Дистанційна робота
-                                        </label>
-                                    </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </section>
+                        <hr/>
+                        <section className="working__conditions section">
+                            <h2 className="search__vacancy__title">Умови роботи</h2>
+                            <div className="working__conditions__radio">
+                                <div className="working__conditions__radio__group">
+                                    <label className="label">
+                                        <input
+                                            className="check__icon"
+                                            type="radio"
+                                            name="type"
+                                            value="office"
+                                            checked={workConditions.type === "office"}
+                                            onChange={handleWorkConditionsChange}
+                                        />
+                                        Місто та адреса
+                                    </label>
                                 </div>
+                                {workConditions.type === "office" && (
+                                    <div className="working__conditions__radio__content">
+                                        <label className="working__conditions__radio__content__label cm__label label">
+                                            <input
+                                                className="m__input input"
+                                                type="text"
+                                                name="city"
+                                                value={workConditions.city}
+                                                onChange={handleWorkConditionsChange}
+                                                placeholder="Місто"
+                                            />
+                                            <input
+                                                className="m__input input"
+                                                type="text"
+                                                name="address"
+                                                value={workConditions.address}
+                                                onChange={handleWorkConditionsChange}
+                                                placeholder="Вулиця і будинок"
+                                            />
+                                        </label>
+                                    </div>
+                                )}
+                                <div className="working__conditions__radio__group">
+                                    <label className="label">
+                                        <input
+                                            className="check__icon"
+                                            type="radio"
+                                            name="type"
+                                            value="remote"
+                                            checked={workConditions.type === "remote"}
+                                            onChange={handleWorkConditionsChange}
+                                        />
+                                        Дистанційна робота
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="checkbox__block">
+                                <h3>Вид зайнятності</h3>
+                                {["full-time", "part-time"].map((employmentType) => (
+                                    <label className="label" key={employmentType}>
+                                        <input
+                                            className="check__icon"
+                                            type="checkbox"
+                                            name="employment"
+                                            value={employmentType}
+                                            checked={workConditions.employment.includes(employmentType)}
+                                            onChange={handleWorkConditionsChange}
+                                        />
+                                        {employmentType === "full-time" ? "повна" : "неповна"}
+                                    </label>
+                                ))}
+                            </div>
+                        </section>
+                        <hr/>
+                        <section className="salary section">
+                            <h2 className="search__vacancy__title">Зарплата</h2>
+                            <div className="salary__radio">
+                                <div className="salary__radio__group">
+                                    <label className="label">
+                                        <input
+                                            className="check__icon"
+                                            type="radio"
+                                            name="salaryType"
+                                            value="range"
+                                            checked={salaryType === "range"}
+                                            onChange={handleSalaryChange}
+                                        />
+                                        Діапазон
+                                    </label>
+                                </div>
+                                {salaryType === "range" && (
+                                    <div className="salary__radio__content">
+                                        <label className="salary__radio__content__label label">
+                                            <input
+                                                className="xs__input input"
+                                                type="text"
+                                                name="min"
+                                                value={salaryRange.min}
+                                                onChange={handleSalaryRangeChange}
+                                                placeholder="від"
+                                            />
+                                            <span>-</span>
+                                            <input
+                                                className="xs__input input"
+                                                type="text"
+                                                name="max"
+                                                value={salaryRange.max}
+                                                onChange={handleSalaryRangeChange}
+                                                placeholder="до"
+                                            />
+                                        </label>
+                                    </div>
+                                )}
+                                <div className="salary__radio__group">
+                                    <label className="salary__radio__content__label label">
+                                        <input
+                                            className="check__icon"
+                                            type="radio"
+                                            name="salaryType"
+                                            value="single"
+                                            checked={salaryType === "single"}
+                                            onChange={handleSalaryChange}
+                                        />
+                                        Одне значення
+                                    </label>
+                                </div>
+                                {salaryType === "single" && (
+                                    <div className="salary__radio__content">
+                                        <label className="label">
+                                            <input
+                                                className="s__input input"
+                                                type="text"
+                                                name="single"
+                                                value={salarySingle}
+                                                onChange={handleSalarySingleChange}
+                                                placeholder="Зарплата"/>
+                                        </label>
+                                    </div>
+                                )}
+                                <div className="salary__radio__group">
+                                    <label className="salary__radio__content__label label">
+                                        <input
+                                            className="check__icon"
+                                            type="radio"
+                                            name="salaryType"
+                                            value="none"
+                                            checked={salaryType === "none"}
+                                            onChange={handleSalaryChange}
+                                        />
+                                        Не вказувати (не рекомендується)
+                                    </label>
+                                </div>
+                            </div>
+                        </section>
+                        <hr/>
+                        <section className="requirements section">
+                            <h2 className="search__vacancy__title">Вимоги до шукача</h2>
+                            <div className="requirements__radio">
+                                <div className="requirements__radio__group">
+                                    {["Готові взяти без досвіду", "Від 1 року", "Від 2 років", "Від 5 років"].map((expItem) => (
+                                        <label className="requirements__radio__group__label label" key={expItem}>
+                                            <input
+                                                className="check__icon"
+                                                type="radio"
+                                                name="experience"
+                                                value={expItem}
+                                                checked={experienceRequirement === expItem}
+                                                onChange={handleExperienceChange}
+                                            />
+                                            {expItem}
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="requirements__education">
+                                <h3>Освіта:</h3>
+                                <label className="label">
+                                    <select
+                                        className="select"
+                                        name="education_id"
+                                        value={education}
+                                        onChange={handleEducationChange}
+                                    >
+                                        {["не має значення", "вища", "незакінчена вища", "середня", "незакінчена середня"].map((option) => (
+                                            <option className="option" key={option} value={option}>
+                                                {option}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </label>
+                            </div>
+                            <div className="requirements__languages">
+                                <h3>Знання мов:</h3>
                                 <div className="checkbox__block">
-                                    <h3>Вид зайнятності</h3>
-                                    {["full-time", "part-time"].map((employmentType) => (
-                                        <label className="label" key={employmentType}>
+                                    {["Англійська", "Українська", "Німецька", "Польська", "Іспанська"].map((languageItem) => (
+                                        <label className="label" key={languageItem}>
                                             <input
                                                 className="check__icon"
                                                 type="checkbox"
-                                                name="employment"
-                                                value={employmentType}
-                                                checked={workConditions.employment.includes(employmentType)}
-                                                onChange={handleWorkConditionsChange}
+                                                name="experience"
+                                                value={languageItem}
+                                                checked={languages.languagesArray.includes(languageItem)}
+                                                onChange={handleLanguagesChange}
                                             />
-                                            {employmentType === "full-time" ? "повна" : "неповна"}
+                                            {languageItem}
                                         </label>
                                     ))}
                                 </div>
-                            </section>
-                            <hr/>
-                            <section className="salary section">
-                                <h2>Зарплата</h2>
-                                <div className="salary__radio">
-                                    <div className="salary__radio__group">
-                                        <label className="label">
+                            </div>
+                            <div className="requirements__person">
+                                <h3>Вакансія підходить для:</h3>
+                                <div className="checkbox__block">
+                                    {["Студента", "Людини з інвалідністю", "Ветирана"].map((audiencesItem) => (
+                                        <label className="label" key={audiencesItem}>
                                             <input
                                                 className="check__icon"
-                                                type="radio"
-                                                name="salaryType"
-                                                value="range"
-                                                checked={salaryType === "range"}
-                                                onChange={handleSalaryChange}
+                                                type="checkbox"
+                                                name="experience"
+                                                value={audiencesItem}
+                                                checked={targetAudiences.audienceArray.includes(audiencesItem)}
+                                                onChange={handleTargetAudiences}
                                             />
-                                            Діапазон
+                                            {audiencesItem}
                                         </label>
-                                    </div>
-                                    {salaryType === "range" && (
-                                        <div className="salary__radio__content">
-                                            <label className="salary__radio__content__label label">
-                                                <input
-                                                    className="xs__input input"
-                                                    type="text"
-                                                    name="min"
-                                                    value={salaryRange.min}
-                                                    onChange={handleSalaryRangeChange}
-                                                    placeholder="від"
-                                                />
-                                                <span>-</span>
-                                                <input
-                                                    className="xs__input input"
-                                                    type="text"
-                                                    name="max"
-                                                    value={salaryRange.max}
-                                                    onChange={handleSalaryRangeChange}
-                                                    placeholder="до"
-                                                />
-                                            </label>
-                                        </div>
-                                    )}
-                                    <div className="salary__radio__group">
-                                        <label className="salary__radio__content__label label">
-                                            <input
-                                                className="check__icon"
-                                                type="radio"
-                                                name="salaryType"
-                                                value="single"
-                                                checked={salaryType === "single"}
-                                                onChange={handleSalaryChange}
-                                            />
-                                            Одне значення
-                                        </label>
-                                    </div>
-                                    {salaryType === "single" && (
-                                        <div className="salary__radio__content">
-                                            <label className="label">
-                                                <input
-                                                    className="s__input input"
-                                                    type="text"
-                                                    name="single"
-                                                    value={salarySingle}
-                                                    onChange={handleSalarySingleChange}
-                                                    placeholder="Зарплата"/>
-                                            </label>
-                                        </div>
-                                    )}
-                                    <div className="salary__radio__group">
-                                        <label className="salary__radio__content__label label">
-                                            <input
-                                                className="check__icon"
-                                                type="radio"
-                                                name="salaryType"
-                                                value="none"
-                                                checked={salaryType === "none"}
-                                                onChange={handleSalaryChange}
-                                            />
-                                            Не вказувати (не рекомендується)
-                                        </label>
-                                    </div>
+                                    ))}
                                 </div>
-                            </section>
-                            <hr/>
-                            <section className="requirements section">
-                                <h2>Вимоги до шукача</h2>
-                                <div className="requirements__radio">
-                                    <div className="requirements__radio__group">
-                                        {["Готові взяти без досвіду", "Від 1 року", "Від 2 років", "Від 5 років"].map((expItem) => (
-                                            <label className="requirements__radio__group__label label" key={expItem}>
-                                                <input
-                                                    className="check__icon"
-                                                    type="radio"
-                                                    name="experience"
-                                                    value={expItem}
-                                                    checked={experienceRequirement === expItem}
-                                                    onChange={handleExperienceChange}
-                                                />
-                                                {expItem}
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className="requirements__education">
-                                    <h3>Освіта:</h3>
-                                    <label className="label">
-                                        <select
-                                            className="select"
-                                            name="education_id"
-                                            value={education}
-                                            onChange={handleEducationChange}
-                                        >
-                                            {["не має значення", "вища", "незакінчена вища", "середня", "незакінчена середня"].map((option) => (
-                                                <option className="option" key={option} value={option}>
-                                                    {option}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </label>
-                                </div>
-                                <div className="requirements__languages">
-                                    <h3>Знання мов:</h3>
-                                    <div className="checkbox__block">
-                                        {["Англійська", "Українська", "Німецька", "Польська", "Іспанська"].map((languageItem) => (
-                                            <label className="label" key={languageItem}>
-                                                <input
-                                                    className="check__icon"
-                                                    type="checkbox"
-                                                    name="experience"
-                                                    value={languageItem}
-                                                    checked={languages.languagesArray.includes(languageItem)}
-                                                    onChange={handleLanguagesChange}
-                                                />
-                                                {languageItem}
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className="requirements__person">
-                                    <h3>Вакансія підходить для:</h3>
-                                    <div className="checkbox__block">
-                                        {["Студента", "Людини з інвалідністю", "Ветирана"].map((audiencesItem) => (
-                                            <label className="label" key={audiencesItem}>
-                                                <input
-                                                    className="check__icon"
-                                                    type="checkbox"
-                                                    name="experience"
-                                                    value={audiencesItem}
-                                                    checked={targetAudiences.audienceArray.includes(audiencesItem)}
-                                                    onChange={handleTargetAudiences}
-                                                />
-                                                {audiencesItem}
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-                            </section>
-                            <hr/>
-                            <section className="description section">
-                                <h2>Опис ваканції</h2>
-                                <textarea
-                                    className="description__textarea"
-                                    value={description}
-                                    onChange={handleDescriptionChange}
-                                ></textarea>
-                            </section>
-                            <button className="btn btn__save" type="submit">Зберегти</button>
-                        </form>
+                            </div>
+                        </section>
+                        <hr/>
+                        <section className="description section">
+                            <h2 className="search__vacancy__title">Опис ваканції</h2>
+                            <textarea
+                                className="description__textarea"
+                                value={description}
+                                onChange={handleDescriptionChange}
+                            ></textarea>
+                        </section>
+                        <button className="btn btn__submit" type="submit">Зберегти</button>
+                    </form>
                 </div>
             </div>
         </div>
     );
 }
 
-export default CreateVacancy;
-
-
-/*
-    погратися з бордером та данимим bc коли автозаповнення полів login/registration
-    зробити щоб людина не могла створювати свої резюме або вакансії або профіль якщо не залогінилась або не зареєструвалась
-    зробити форму реєстрації
-    зробити візитку і стоірнку Мій профіль
-*/
+export default withAuth(CreateVacancy);

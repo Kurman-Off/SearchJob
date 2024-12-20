@@ -8,9 +8,18 @@
 
 body {
     margin: 0 auto;
+    --mainColor: rgb(27 6 58 / 60%);
+    --bc: rgb(224 224 224);
+    --bcContent: #eeeeee;
+    background-color: var(--bc);
 }
 
 a {
     text-decoration: none;
     color: var(--mainColor);
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 30px;
 }

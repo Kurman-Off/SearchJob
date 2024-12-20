@@ -22,9 +22,12 @@ function Login() {
 
         axios.post("http://localhost:3000/login", values)
             .then(res => {
-                if (res.status === 201) {
+                if (res.status === 200) {
                     console.log("Login success");
                     setError("");
+
+                    localStorage.setItem("token", res.data.token);
+
                     navigate("/");
                 }
             })
@@ -33,7 +36,8 @@ function Login() {
                 setTimeout(() => {
                     setError("");
                 }, 3000);
-                console.error(err.response.data);
+
+                console.error("Помилка на сервері:", err.response ? err.response.data : err);
             });
     };
 

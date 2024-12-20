@@ -1,0 +1,16 @@
+h2 {
+    margin-top: 40px;
+}
+
+.container__content {
+    margin: 0 auto;
+    width: 800px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card {
+    padding: 0 30px 30px 30px;
+}

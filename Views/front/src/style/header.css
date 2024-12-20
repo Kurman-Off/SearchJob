@@ -4,13 +4,13 @@
 }
 
 .header__container {
-    height: 100px;
+    height: 150px;
     margin: 0 auto;
-    padding: 0 20px 0 35px;
+    padding: 0 20px;
     max-width: 1000px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
 .header__content {
@@ -18,8 +18,8 @@
 }
 
 .header__logo{
-    font-size: 32px;
-    font-family: "Kablammo", system-ui;
+    height: 130px;
+    width: 130px;
 }
 
 .header__nav{
@@ -33,4 +33,8 @@
 
 .nav__list__link {
     color: var(--bcContent);
+}
+
+.nav__list__link:hover {
+    border-bottom: 2px solid var(--bcContent);
 }

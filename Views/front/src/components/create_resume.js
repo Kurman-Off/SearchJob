@@ -3,7 +3,7 @@ import axios from "axios";
 import Header from "./header";
 import "../style/vacancy-resume-forms.css";
 import { useNavigate } from "react-router-dom";
-
+import withAuth from "./withAuth"
 
 function CreateResume() {
     const [error, setError] = useState("");
@@ -15,6 +15,9 @@ function CreateResume() {
     const [educationYears, setEducationYears] = useState({
         startYear: "",
         endYear: "",
+    });
+    const [workConditions, setWorkConditions] = useState({
+        employment: "",
     });
     const [value, setValue] = useState({
         fullname: "",
@@ -51,7 +54,6 @@ function CreateResume() {
                 });
         }
     }, [value.category]);
-
 
     function CalculationOfYears() {
 
@@ -115,7 +117,6 @@ function CreateResume() {
         }
     };
 
-
     const handleJobStatusChange = (e) => {
         const { value, name } = e.target;
         setValue((prev) => ({
@@ -124,30 +125,43 @@ function CreateResume() {
         }));
     };
 
-    const handleResumeChange = (e) => {
-        const { name, value } = e.target;
+    const handleWorkConditionsChange = (e) => {
+        const { value, checked } = e.target;
 
-        if (name === "birthday") {
-            const date = new Date(value);
-            const year = date.getFullYear();
-            const currentYear = new Date().getFullYear();
+        setWorkConditions((prev) => {
+            const updatedEmployment = checked
+                ? prev.employment
+                    ? `${prev.employment}, ${value}`
+                    : value
+                : prev.employment.split(", ").filter((item) => item !== value).join(", ");
 
-            if (year > currentYear - 18) {
-                setError("Вам має бути мінімум 18 років");
-                setTimeout(() => {
-                    setError("");
-                }, 3000);
-            }
-        }
-
-        setValue((prev) => ({ ...prev, [name]: value }));
+            return {
+                ...prev,
+                employment: updatedEmployment,
+            };
+        });
     };
 
-    const handleSubmit = (event) => {
+    const handleResumeChange = (e) => {
+        const {name, value} = e.target;
+            setValue((prev) => ({...prev, [name]: value}));
+    };
+
+        const handleSubmit = (event) => {
         event.preventDefault();
         const workedTimeCalculated  = CalculationOfYears();
 
         if (!workedTimeCalculated) {
+            setTimeout(() => {
+                setError("");
+            }, 3000);
+            return;
+        }
+
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            setError("Токен не знайдений. Будь ласка, увійдіть.");
             setTimeout(() => {
                 setError("");
             }, 3000);
@@ -159,6 +173,7 @@ function CreateResume() {
                 title: value.title,
                 city: value.city,
                 category: value.category,
+                employment: workConditions.employment,
                 birthday: value.birthday,
                 position: value.position,
                 companyName: value.companyName,
@@ -169,18 +184,27 @@ function CreateResume() {
                 specialty: value.specialty,
                 educationYears: educationYears,
                 skills: skills,
-
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         })
             .then((res) => {
-                if (res.status === 201) {
-                    navigate("/");
+                if (res.status === 200) {
+                    navigate("/my/resumes");
                 }
             })
             .catch((err) => {
                 if (err.response && err.response.data) {
-                    setError(err.response.data);
+                    setError(err.response.data.message);
+                    setTimeout(() => {
+                        setError("");
+                    }, 3000);
                 } else {
                     setError("Something went wrong. Please try again later.");
+                    setTimeout(() => {
+                        setError("");
+                    }, 3000);
                 }
                 console.error(err.response ? err.response.data : err);
             });
@@ -218,7 +242,7 @@ function CreateResume() {
                                     onChange={handleResumeChange}
                                 />
 
-                                <h3>Де ви хочете працювати</h3>
+                                <h3>Де ви хочете працювати  (Місто)</h3>
                                 <input
                                     className="m__input input"
                                     type="text"
@@ -246,6 +270,21 @@ function CreateResume() {
                                         </li>
                                     ))}
                                 </ul>
+
+                                <h3>Вид зайнятності</h3>
+                                {["Повна", "Неповна"].map((employmentType) => (
+                                    <label className="label" key={employmentType}>
+                                        <input
+                                            className="check__icon"
+                                            type="checkbox"
+                                            name="employment"
+                                            value={employmentType}
+                                            checked={workConditions.employment.includes(employmentType)}
+                                            onChange={handleWorkConditionsChange}
+                                        />
+                                        {employmentType === "full-time" ? "повна" : "неповна"}
+                                    </label>
+                                ))}
 
                                 <h3>Дата Народження</h3>
                                 <input
@@ -504,6 +543,7 @@ function CreateResume() {
 
                                                     {skill}
                                                     <button
+                                                        name="skills__list__item__btn"
                                                         className="btn__delete_item"
                                                         onClick={() => handleDeleteSkill(skill)}>
                                                         ×
@@ -547,7 +587,7 @@ function CreateResume() {
                             </div>
 
                         </section>
-                        <button className="btn btn__save" type="submit">Зберегти</button>
+                        <button className="btn btn__submit" type="submit">Зберегти</button>
                     </form>
                 </div>
             </div>
@@ -556,4 +596,4 @@ function CreateResume() {
     );
 }
 
-export default CreateResume;
+export default withAuth(CreateResume);

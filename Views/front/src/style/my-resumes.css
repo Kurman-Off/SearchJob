@@ -1,0 +1,62 @@
+.my__resumes {
+    min-width: 700px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.my__resumes__block__title {
+    margin: 0 auto;
+    width: 700px;
+}
+
+.my__resumes__title {
+    margin: 40px 0 0 0;
+}
+
+.btn__create {
+    width: 170px;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    background-color: var(--bcContent);
+    border: 1px solid var(--mainColor);
+    color: var(--mainColor);
+    font-weight: bold;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.btn__create span {
+    padding: 1px 7px 1px 7px;
+    border: 2px solid var(--mainColor);;
+    border-radius: 50%;
+    color: var(--mainColor);;
+    font-size: 20px;
+}
+
+.btn__create:hover {
+    cursor: pointer;
+    box-shadow: 0 0 4px 2px rgb(188 188 188 / 60%);
+    background-color: #efe6fa;
+}
+
+.resume__block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.resume__block__item {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    width: 800px;
+    padding: 10px 40px 20px;
+    background-color: var(--bcContent);
+    border-radius: 40px;
+    box-shadow: 0 0 20px 2px rgb(188 188 188 / 60%);
+}

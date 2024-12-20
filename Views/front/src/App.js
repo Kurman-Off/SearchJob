@@ -3,8 +3,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Registration from "./components/registration";
 import Login from "./components/login";
 import Home from "./components/home";
-import CreateVacancy from "./components/create_vacancy"
+import CreateVacancy from "./components/create_vacancy";
 import CreateResume from "./components/create_resume";
+import UserProfile from "./components/user_profile";
+import MyResumes from "./components/my_resumes";
+import MyResume from "./components/my_resume";
+import MyVacancies from "./components/my_vacancies";
+import MyVacancy from "./components/my_vacancy";
 
 
 function App () {
@@ -12,10 +17,15 @@ function App () {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Home />}></Route>
-                <Route path="/registration" element={<Registration />}></Route>
-                <Route path="/login" element={<Login />}></Route>
-                <Route path="/create-vacancy" element={<CreateVacancy />}></Route>
-                <Route path="/create-resume" element={<CreateResume />}></Route>
+                <Route path="/registration/" element={<Registration />}></Route>
+                <Route path="/login/" element={<Login />}></Route>
+                <Route path="/create/vacancy/" element={<CreateVacancy />}></Route>
+                <Route path="/create/resume/" element={<CreateResume />}></Route>
+                <Route path="/my/profile/" element={<UserProfile />}></Route>
+                <Route path="/my/resumes/" element={<MyResumes />}></Route>
+                <Route path="/my/resume/:id" element={<MyResume />}></Route>
+                <Route path="/my/vacancies/" element={<MyVacancies />}></Route>
+                <Route path="/my/vacancy/:id" element={<MyVacancy />}></Route>
             </Routes>
         </BrowserRouter>
     );

@@ -1,5 +1,7 @@
 const connection = require("../Modal/mysql_connection");
+const jwt = require("jsonwebtoken");
 const crypto = require('crypto');
+const SECRET_KEY = "secret_key";
 
 function validateLoginData(email, password) {
     if (!email) throw new Error("Email is required");
@@ -11,16 +13,13 @@ function authenticateUser(email, password, callback) {
 
     connection.query(query, [email], (err, results) => {
         if (err) {
-            console.error('Помилка при запиті до бази даних:', err.stack);
+            console.error('Помилка при запиті  до бази даних:', err.stack);
             return callback(err);
         }
 
-        if (results.length === 0) {
-            return callback(null, false);
-        }
+        if (results.length === 0) return callback(null, false);
 
         const user = results[0];
-
         const hashedPassword = crypto.createHash('md5').update(password).digest('hex');
 
         if (hashedPassword !== user.password) {
@@ -28,7 +27,7 @@ function authenticateUser(email, password, callback) {
             return callback(null, false);
         }
 
-        return callback(null, true);
+        return callback(null, true, user);
     });
 }
 
@@ -39,16 +38,18 @@ function loginUser(userData, res) {
         return res.status(400).send(err.message);
     }
 
-    authenticateUser(userData.email, userData.password, (err, isAuthenticated) => {
+    authenticateUser(userData.email, userData.password, (err, isAuthenticated, user) => {
         if (err) {
-            console.error("Сталася помилка при автентифікації:", err.stack);
             return res.status(500).send("Сталася помилка при автентифікації");
         }
 
         if (!isAuthenticated) {
             return res.status(401).send("Невірний логін або пароль");
         } else {
-            return res.status(201).send("Логін успішний");
+            const token = jwt.sign({id: user.id, email: user.email}, SECRET_KEY, {
+                expiresIn: "30d"
+            });
+            return res.status(200).json({token, message: "Логін успішний"});
         }
     });
 }

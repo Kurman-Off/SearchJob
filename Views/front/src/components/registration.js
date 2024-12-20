@@ -27,7 +27,7 @@ function Registration() {
 
         axios.post("http://localhost:3000/registration", values)
             .then(res => {
-                if (res.status === 201) {
+                if (res.status === 200) {
                     console.log("Register success");
                     setError("");
                     navigate("/login");
