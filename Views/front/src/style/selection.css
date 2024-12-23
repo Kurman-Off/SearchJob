@@ -1,0 +1,43 @@
+.modal__content {
+    margin: 0 auto;
+    width: 800px;
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.resume__actions {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    align-items: center;
+    padding: 20px 40px;
+    justify-content: space-between;
+}
+
+.resume__actions div {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+}
+
+.resume__actions__link {
+    text-align: center;
+}
+
+.btn__view {
+    width: auto;
+    padding: 0 20px;
+}
+
+.modal__actions {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width:100%;
+}
+
+.radio__btn {
+    width: 20px;
+    height: 20px;
+}

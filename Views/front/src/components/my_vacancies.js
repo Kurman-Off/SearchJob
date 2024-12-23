@@ -12,7 +12,6 @@ function MyVacancies() {
     const [vacancies, setVacancies] = useState([]);
     const navigate = useNavigate();
 
-
     useEffect(() => {
         const token = localStorage.getItem('token');
         axios
@@ -37,7 +36,7 @@ function MyVacancies() {
                 }
             })
             .catch((error) => {
-                setError("Сталась помилка, спробуйте пізніше");
+                setError("Здаєтсья у вас немає створених вакансій");
                 setTimeout(() => setError(""), 3000);
                 console.error("Помилка при завантаженні даних:", error);
             });
@@ -95,7 +94,6 @@ function MyVacancies() {
                                     <button className="btn btn__submit">Переглянути вакансію</button>
                                 </a>
                             </div>
-
                         );
                     })}
                 </div>

@@ -18,10 +18,31 @@ function insertVacancy(vacancyCategoryData, res) {
         user_id,
     } = vacancyCategoryData;
 
+
+
+    console.log(vacancyCategoryData)
     const insertQuery = `
         INSERT INTO vacancy 
         (companyName, title, category, type, city, address, employment, salary, experience, education, languages, targetAudiences, description, user_id) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    console.log("Дані, що відправляються в запит:", {
+        companyName,
+        title,
+        category,
+        type,
+        city,
+        address,
+        employment: JSON.stringify(employment),          // Перевірка salary
+        salary: JSON.stringify(salary),          // Перевірка salary
+        experience,
+        education: JSON.stringify(education),    // Перевірка education
+        languages: JSON.stringify(languages),    // Перевірка languages
+        targetAudiences: JSON.stringify(targetAudiences),  // Перевірка targetAudiences
+        description: JSON.stringify(description),  // Перевірка description
+        user_id
+    });
 
     connection.query(insertQuery, [
         companyName,

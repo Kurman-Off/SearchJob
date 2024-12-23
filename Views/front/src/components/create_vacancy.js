@@ -142,7 +142,7 @@ function CreateVacancy() {
             return salarySingle;
         }
 
-        return null;
+        return "Не вказано";
     };
 
 
@@ -167,6 +167,22 @@ function CreateVacancy() {
             }, 3000);
             return;
         }
+
+        console.log(
+            companyName,
+            vacancyTitle,
+            category,
+            workConditions.type,
+            workConditions.city,
+            workConditions.address,
+            workConditions.employment,
+            salary,
+            experienceRequirement,
+            education,
+            languages.languagesArray,
+            targetAudiences.audienceArray,
+            description,
+        )
 
         axios.post("http://localhost:3000/create-vacancy", {
             companyName: companyName,
@@ -316,9 +332,10 @@ function CreateVacancy() {
                                     </label>
                                 </div>
                             </div>
+
                             <div className="checkbox__block">
                                 <h3>Вид зайнятності</h3>
-                                {["full-time", "part-time"].map((employmentType) => (
+                                {["Повна", "Неповна"].map((employmentType) => (
                                     <label className="label" key={employmentType}>
                                         <input
                                             className="check__icon"
@@ -328,7 +345,7 @@ function CreateVacancy() {
                                             checked={workConditions.employment.includes(employmentType)}
                                             onChange={handleWorkConditionsChange}
                                         />
-                                        {employmentType === "full-time" ? "повна" : "неповна"}
+                                        {employmentType}
                                     </label>
                                 ))}
                             </div>

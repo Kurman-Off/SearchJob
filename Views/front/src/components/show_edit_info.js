@@ -5,10 +5,7 @@ function ShowEditInfo({ title, subtitle, labels = [], values = {}, onSave }) {
     const [editedValues, setEditedValues] = useState({});
 
     useEffect(() => {
-        // Перевіряємо, чи змінюється значення `values`
-        if (JSON.stringify(editedValues) !== JSON.stringify(values)) {
-            setEditedValues(values);
-        }
+        setEditedValues(values);
     }, [values]); // `values` у залежностях
 
     const handleEditClick = () => {

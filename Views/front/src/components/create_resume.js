@@ -282,7 +282,7 @@ function CreateResume() {
                                             checked={workConditions.employment.includes(employmentType)}
                                             onChange={handleWorkConditionsChange}
                                         />
-                                        {employmentType === "full-time" ? "повна" : "неповна"}
+                                        {employmentType}
                                     </label>
                                 ))}
 

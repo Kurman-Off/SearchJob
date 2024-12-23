@@ -30,7 +30,7 @@ function Header() {
                     <ul className="nav__list">
                         <li className="nav__list__item"><a href="/" className="nav__list__link">Головна</a></li>
                         <li className="nav__list__item"><a href="/my/resumes/" className="nav__list__link">Мої резюме</a></li>
-                        <li className="nav__list__item"><a href="/my/vacancies" className="nav__list__link">Мої вакансії</a></li>
+                        <li className="nav__list__item"><a href="/my/vacancies/" className="nav__list__link">Мої вакансії</a></li>
                         <li className="nav__list__item"><a href="/my/profile/" className="nav__list__link">Мій профіль</a></li>
                         {isLoggedIn ? (
                             <li className="nav__list__item"><a href="/login/" className="nav__list__link" onClick={handleLogout}>Вийти</a></li>

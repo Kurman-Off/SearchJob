@@ -10,7 +10,10 @@ import MyResumes from "./components/my_resumes";
 import MyResume from "./components/my_resume";
 import MyVacancies from "./components/my_vacancies";
 import MyVacancy from "./components/my_vacancy";
-
+import Vacancies from "./components/show_vacanies";
+import Resumes from "./components/show_resumes";
+import Resume from "./components/show_resume";
+import Vacancy from "./components/show_vacancy";
 
 function App () {
     return (
@@ -26,6 +29,10 @@ function App () {
                 <Route path="/my/resume/:id" element={<MyResume />}></Route>
                 <Route path="/my/vacancies/" element={<MyVacancies />}></Route>
                 <Route path="/my/vacancy/:id" element={<MyVacancy />}></Route>
+                <Route path="/show/vacancies/" element={<Vacancies />}></Route>
+                <Route path="/show/resumes/" element={<Resumes />}></Route>
+                <Route path="/show/resume/:id" element={<Resume />}></Route>
+                <Route path="/show/vacancy/:id" element={<Vacancy />}></Route>
             </Routes>
         </BrowserRouter>
     );

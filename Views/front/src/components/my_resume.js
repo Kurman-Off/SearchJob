@@ -29,7 +29,7 @@ function MyResume() {
         "Період роботи:": "",
     });
     const [eduInfo, setEduInfo] = useState({
-        "Ступінь освіти": "",
+        "Ступінь освіти:": "",
         "Заклад освіти:": "",
         "Факультет:": "",
         "Спеціальність:": "",
@@ -58,7 +58,7 @@ function MyResume() {
             });
 
             setEduInfo({
-                "Ступінь освіти": info.education || "",
+                "Ступінь освіти:": info.education || "",
                 "Заклад освіти:": info.educationalInstitution || "",
                 "Факультет:": info.faculty || "",
                 "Спеціальність:": info.specialty || "",
@@ -151,7 +151,7 @@ function MyResume() {
         } else if (type === "education") {
             formattedValues = {
                 ...formattedValues,
-                education: updatedValues["Ступінь освіти"],
+                education: updatedValues["Ступінь освіти:"],
                 educationalInstitution: updatedValues["Заклад освіти:"],
                 faculty: updatedValues["Факультет:"],
                 specialty: updatedValues["Спеціальність:"],
@@ -185,7 +185,7 @@ function MyResume() {
                 } else if (type === "education") {
                     setEduInfo((prev) => ({
                         ...prev,
-                        "Ступінь освіти": formattedValues.education,
+                        "Ступінь освіти:": formattedValues.education,
                         "Заклад освіти:": formattedValues.educationalInstitution,
                         "Факультет:": formattedValues.faculty,
                         "Спеціальність:": formattedValues.specialty,
@@ -249,13 +249,13 @@ function MyResume() {
     };
 
     const toggleEditMode = () => {
-        setIsEditing((prev) => !prev); // Перемикаємо режим редагування
+        setIsEditing((prev) => !prev);
     };
 
     const handleAddSkill = () => {
         if (currentSkill && !skills.includes(currentSkill)) {
             setSkills((prevSkills) => [...prevSkills, currentSkill]);
-            setCurrentSkill(""); // Очищаємо поле
+            setCurrentSkill("");
         }
     };
 
@@ -271,7 +271,7 @@ function MyResume() {
 
     const handleCancelEdit = () => {
         setIsEditing(false);
-        setSkills(info.skills);  // Відновлюємо навички з info
+        setSkills(info.skills);
     };
 
     const handleSaveSkills = () => {
@@ -337,7 +337,7 @@ function MyResume() {
                     <div className="card">
                         {info && (
                             <ShowEditInfo
-                                subtitle="Загальна інформація"
+                                subtitle="Досвід роботи"
                                 labels={Object.keys(experienceInfo)}
                                 values={experienceInfo}
                                 onSave={(fields) => handleSave(fields, "experience")}

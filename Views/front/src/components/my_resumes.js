@@ -4,12 +4,14 @@ import withAuth from "./withAuth";
 import "../style/my-resumes.css"
 import axios from "axios";
 import ShowInfo from "./show_info";
+import dateFormat from "dateformat";
+import {useNavigate} from "react-router-dom";
 
 function MyResumes() {
 
     const [error, setError] = useState("");
     const [resumes, setResumes] = useState([]);
-
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -24,7 +26,8 @@ function MyResumes() {
                 if (Array.isArray(res.data)) {
                     const updatedResumes = res.data.map(resume => ({
                         ...resume,
-                        employment: resume.employment.split(',')
+                        employment: resume.employment.split(','),
+                        birthday: dateFormat(new Date(resume.birthday), 'dd.mm.yyyy')
                     }));
                     setResumes(updatedResumes);
                 } else {
@@ -32,7 +35,7 @@ function MyResumes() {
                 }
             })
             .catch((error) => {
-                setError("Сталась помилка, спробуйте пізніше");
+                setError("Здається у вас немає створених резюме");
                 setTimeout(() => setError(""), 3000);
                 console.error("Помилка при завантаженні даних:", error);
             });
@@ -43,7 +46,8 @@ function MyResumes() {
     }
 
     if (resumes.length === 0) {
-        return <div className="loading">Завантаження...</div>;
+        navigate("/create/resume");
+        return null;
     }
 
     return (
